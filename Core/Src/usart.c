@@ -64,6 +64,8 @@ uint8_t auchCRCLo[] =
 		0x40
 };
 //
+uint8_t reData[1] = {0};
+uint8_t seData[1] = {0};
 uint8_t Uart2RS485[8] = {0};
 uint8_t RS4852Uart[11]= {0};
 uint8_t dev_state = DEV_NORMAL;
@@ -290,6 +292,7 @@ void RS485_2_Uart(uint8_t *data, uint8_t len)
 	UartData[UCRC_H] = crc_tst >> 8;
 	UartData[UCRC_L] = crc_tst & 0xF0;
 	HAL_UART_Transmit(&huart1, UartData, 13, 0xFFFF);
+
 
 }
 /* USER CODE END 1 */
