@@ -34,8 +34,7 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
-#define RS485_RECV 	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET)  //写状
-#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_SET);   //读状
+
 
 #define TARG     0
 #define CODE	 1
@@ -65,13 +64,13 @@ extern UART_HandleTypeDef huart2;
 
 #define CMD_STATE 	0x01	//获取状�??
 #define CMD_VALUE 	0x02	//获取数�??
-#define CMD_CODES 	0x03	//功能�?
-#define CMD_DEV	    0x64    //设备状�?�地�?�?
+#define CMD_CODES 	0x03	//功能�??
+#define CMD_DEV	    0x64    //设备状�?�地�??�??
 
 #define DEV_NORMAL	0x00	//正常
 #define DEV_COVER	0x01	//遮挡
 #define DEV_DISCO	0x02	//断网
-#define DEV_CODIS	0x03	//遮挡和断�?
+#define DEV_CODIS	0x03	//遮挡和断�??
 #define DEV_STATE   0x64
 
 

@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stm32f1xx_hal_uart.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -47,7 +47,8 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+#define RS485_RECV 	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_SET)      //接收
+#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET);   //发�??
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -79,7 +80,13 @@ void Error_Handler(void);
 #define PBUS_RX_Pin GPIO_PIN_10
 #define PBUS_RX_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-
+#define _on		1
+#define _off	0
+extern uint8_t RS485_RX_Flag ;
+extern uint8_t RS485_TX_Flag ;
+extern uint8_t PBUS_RX_Flag;
+extern uint8_t PBUS_TX_Flag;
+extern uint8_t UartData[5];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

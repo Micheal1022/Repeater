@@ -56,212 +56,185 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define ONEDATA
-#define delaytime	30
-#define _on  1
-#define _off 1
+//#define ONEDATA
+
 uint8_t RS485_RX_Flag = 0;
 uint8_t RS485_TX_Flag = 0;
 uint8_t PBUS_RX_Flag  = 0;
 uint8_t PBUS_TX_Flag  = 0;
-
+uint8_t UartData[5] = {0};
+uint8_t pData[1];
+#define DELAYTIME	15
 /* USER CODE END 0 */
 
 /**
- * @brief  The application entry point.
- * @retval int
- */
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
-	/* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
 
-	/* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-	/* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	MX_USART1_UART_Init();
-	MX_USART2_UART_Init();
-	/* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
+  /* USER CODE BEGIN 2 */
 	POW_LED_ON;
-	HAL_UART_Receive_IT(&huart1,Uart2RS485,8); //接收串口数据
-	/* USER CODE END 2 */
+	RS485_RECV;
+	pData[0] = 11;
+	HAL_UART_Receive_IT(&huart2, pData, 1); //中断接收到RS485 数据
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		/* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-		/* USER CODE BEGIN 3 */
-
+    /* USER CODE BEGIN 3 */
 		if (_on == PBUS_RX_Flag) {
+			PBUS_RX_Flag = _off;
 			PBUS_RX_LED_ON;
-		} else if (_off == PBUS_RX_Flag) {
-			PBUS_RX_LED_OFF;
 		}
+		HAL_Delay(DELAYTIME);
+		PBUS_RX_LED_OFF;
+
 
 		if (_on == PBUS_TX_Flag) {
+			PBUS_TX_Flag = _off;
 			PBUS_TX_LED_ON;
-		} else if (_off == PBUS_TX_Flag) {
-			PBUS_TX_LED_OFF;
 		}
+		HAL_Delay(DELAYTIME);
+		PBUS_TX_LED_OFF;
+
 
 		if (_on == RS485_RX_Flag) {
+			RS485_RX_Flag = _off;
 			RS485_RX_LED_ON;
-		} else if (_off == RS485_RX_Flag) {
-			RS485_RX_LED_OFF;
 		}
+		HAL_Delay(DELAYTIME);
+		RS485_RX_LED_OFF;
+
 
 		if (_on == RS485_TX_Flag) {
+			RS485_TX_Flag = _off;
 			RS485_TX_LED_ON;
-		} else if (_off == RS485_TX_Flag) {
-			RS485_TX_LED_OFF;
 		}
+		HAL_Delay(DELAYTIME);
+		RS485_TX_LED_OFF;
 
+		//HAL_UART_Transmit(&huart2, pData, 1, 0xFFFF);
 
 	}
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
-	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-	/** Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-	RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-	RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-	{
-		Error_Handler();
-	}
-	/** Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-			|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  /** Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-	{
-		Error_Handler();
-	}
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-#ifdef ONEDATA
 	if (huart == &huart1) {
-		PBUS_RX_LED_ON;
-		HAL_Delay(delaytime);
-		PBUS_RX_LED_OFF;
-		Uart_2_RS485(Uart2RS485, 8);  //发送到RS485数据
-		PBUS_RX_LED_ON;
-		HAL_Delay(delaytime);
-		PBUS_RX_LED_OFF;
-		RS485_RECV;
-		if (Uart2RS485[3] == DEV_STATE) {
-			HAL_UART_Receive_IT(&huart2, RS4852Uart, STATELEN); //中断接收到RS485
-		} else {
-			HAL_UART_Receive_IT(&huart2, RS4852Uart, VALUELEN); //中断接收到RS485
-		}
-	} else if (huart == &huart2) {
-		RS485_RX_LED_ON;
-		HAL_Delay(delaytime);
-		RS485_TX_LED_OFF;
-		if (RS4852Uart[2] == 0x02) {
-			RS485_TX_LED_ON;
-			HAL_Delay(delaytime);
-			RS485_TX_LED_ON;
-			RS485_2_Uart(RS4852Uart,STATELEN);   //发送到串口数据
-		} else {
-			RS485_TX_LED_ON;
-			HAL_Delay(delaytime);
-			RS485_TX_LED_OFF;
-			RS485_2_Uart(RS4852Uart,VALUELEN);   //发送到串口数据
-		}
-		HAL_UART_Receive_IT(&huart1, Uart2RS485, 8); //中断接收到RS485 数据
-	}
-
-#else
-	/*发送一个字节*/
-	if (huart == &huart1) {
-		RS485_RECV;
 		PBUS_RX_Flag = _on;
-		HAL_UART_Receive_IT(&huart2, reData, 1); //中断接收到RS485
-		PBUS_RX_Flag = _off;
 		RS485_SEND;
-		PBUS_TX_Flag = _on;
-		HAL_UART_Transmit(&huart2, seData, 1, 0xFFFF);
-		PBUS_TX_Flag = _off;
-	} else if (huart == &huart2) {
-		RS485_TX_Flag = _on;
-		HAL_UART_Transmit(&huart1, seData, 1, 0xFFFF);
-		RS485_TX_Flag = _off;
-		RS485_RX_Flag = _on;
-		HAL_UART_Receive_IT(&huart1, reData, 1); //中断接收到RS485 数据
-		RS485_RX_Flag = _off;
+		if (HAL_OK == HAL_UART_Transmit(&huart2, pData, 1, 0xFFFF)) {
+			PBUS_TX_Flag = _on;
+		}
 
+		RS485_RECV;
+		HAL_UART_Receive_IT(&huart1, pData, 1); //中断接收到PBUS数据
+
+	} else if (huart == &huart2) {
+		RS485_RX_Flag = _on;
+		if (HAL_OK == HAL_UART_Transmit(&huart1, pData, 1, 0xFFFF)) {
+			RS485_TX_Flag = _on;
+		}
+
+		HAL_UART_Receive_IT(&huart2, pData, 1); //中断接收到RS485 数据
 	}
-#endif
 }
 /* USER CODE END 4 */
 
 /**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
 void Error_Handler(void)
 {
-	/* USER CODE BEGIN Error_Handler_Debug */
+  /* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 
-	/* USER CODE END Error_Handler_Debug */
+  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
 /**
- * @brief  Reports the name of the source file and the source line number
- *         where the assert_param error has occurred.
- * @param  file: pointer to the source file name
- * @param  line: assert_param error line source number
- * @retval None
- */
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
 void assert_failed(uint8_t *file, uint32_t line)
 { 
-	/* USER CODE BEGIN 6 */
+  /* USER CODE BEGIN 6 */
 	/* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-	/* USER CODE END 6 */
+  /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
 

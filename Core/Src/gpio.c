@@ -52,7 +52,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, POW_LED_Pin|PBUS_TX_LED_Pin|PBUS_RX_LED_Pin|RS485_TX_LED_Pin 
-                          |RS485_RX_LED_Pin, GPIO_PIN_RESET);
+                          |RS485_RX_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = RS485_CON_Pin;
