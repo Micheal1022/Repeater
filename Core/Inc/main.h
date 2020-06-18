@@ -48,7 +48,7 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 #define RS485_RECV 	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_SET)      //接收
-#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET);   //发�??
+#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET);   //发�??
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -86,7 +86,8 @@ extern uint8_t RS485_RX_Flag ;
 extern uint8_t RS485_TX_Flag ;
 extern uint8_t PBUS_RX_Flag;
 extern uint8_t PBUS_TX_Flag;
-extern uint8_t UartData[5];
+//extern uint8_t rs485Data[1];
+//extern uint8_t pbusData[1];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

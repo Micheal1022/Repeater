@@ -62,8 +62,9 @@ uint8_t RS485_RX_Flag = 0;
 uint8_t RS485_TX_Flag = 0;
 uint8_t PBUS_RX_Flag  = 0;
 uint8_t PBUS_TX_Flag  = 0;
-uint8_t UartData[5] = {0};
-uint8_t pData[1];
+
+static uint8_t rs485Data[1] = {0};
+static uint8_t pbusData[1]  = {0};
 #define DELAYTIME	15
 /* USER CODE END 0 */
 
@@ -100,8 +101,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	POW_LED_ON;
 	RS485_RECV;
-	pData[0] = 11;
-	HAL_UART_Receive_IT(&huart2, pData, 1); //中断接收到RS485 数据
+	HAL_UART_Receive_IT(&huart2, rs485Data, 1); //中断接收到RS485 数据
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,7 +109,7 @@ int main(void)
 	while (1)
 	{
     /* USER CODE END WHILE */
-
+		RS485_RECV;
     /* USER CODE BEGIN 3 */
 		if (_on == PBUS_RX_Flag) {
 			PBUS_RX_Flag = _off;
@@ -191,20 +191,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if (huart == &huart1) {
 		PBUS_RX_Flag = _on;
 		RS485_SEND;
-		if (HAL_OK == HAL_UART_Transmit(&huart2, pData, 1, 0xFFFF)) {
+		if (HAL_OK == HAL_UART_Transmit(&huart2, pbusData, 1, 100)) {
 			PBUS_TX_Flag = _on;
 		}
-
 		RS485_RECV;
-		HAL_UART_Receive_IT(&huart1, pData, 1); //中断接收到PBUS数据
+		HAL_UART_Receive_IT(&huart1, pbusData, 1); //中断接收到PBUS数据
 
 	} else if (huart == &huart2) {
 		RS485_RX_Flag = _on;
-		if (HAL_OK == HAL_UART_Transmit(&huart1, pData, 1, 0xFFFF)) {
+		if (HAL_OK == HAL_UART_Transmit(&huart1, rs485Data, 1, 100)) {
 			RS485_TX_Flag = _on;
 		}
 
-		HAL_UART_Receive_IT(&huart2, pData, 1); //中断接收到RS485 数据
+		HAL_UART_Receive_IT(&huart2, rs485Data, 1); //中断接收到RS485 数据
 	}
 }
 /* USER CODE END 4 */
