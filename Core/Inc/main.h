@@ -47,8 +47,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define RS485_RECV 	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_SET)      //接收
-#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET);   //发�??
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -63,7 +62,7 @@ void Error_Handler(void);
 #define RS485_TX_GPIO_Port GPIOA
 #define RS485_RX_Pin GPIO_PIN_3
 #define RS485_RX_GPIO_Port GPIOA
-#define RS485_CON_Pin GPIO_PIN_4
+#define RS485_CON_Pin GPIO_PIN_5
 #define RS485_CON_GPIO_Port GPIOA
 #define POW_LED_Pin GPIO_PIN_0
 #define POW_LED_GPIO_Port GPIOB
@@ -86,6 +85,8 @@ extern uint8_t RS485_RX_Flag ;
 extern uint8_t RS485_TX_Flag ;
 extern uint8_t PBUS_RX_Flag;
 extern uint8_t PBUS_TX_Flag;
+#define RS485_RECV 	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_RESET)
+#define RS485_SEND	HAL_GPIO_WritePin(RS485_CON_GPIO_Port, RS485_CON_Pin, GPIO_PIN_SET);
 //extern uint8_t rs485Data[1];
 //extern uint8_t pbusData[1];
 /* USER CODE END Private defines */
